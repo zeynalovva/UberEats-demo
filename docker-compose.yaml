@@ -1,0 +1,29 @@
+services:
+  ms-identity:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ms_identity_user
+      POSTGRES_PASSWORD: ms_identity_pass
+      POSTGRES_DB: ms_identity
+    ports:
+      - "9001:5432"
+    volumes:
+      - ms_identity:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: [ "redis-server", "--appendonly", "yes" ]
+
+volumes:
+  ms_identity:
+  redis-data:
+
+networks:
+  microservices-network:
+    driver: bridge
