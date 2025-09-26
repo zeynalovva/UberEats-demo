@@ -1,2 +1,2 @@
 rootProject.name = 'UberEats'
-include("ms-identity")
+include("ms-identity", "common-lib")
