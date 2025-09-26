@@ -17,25 +17,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRegisterRequest {
 
-    @NotBlank
-    @Size(min = 5, max = 50)
-    private String firstName;
+  @NotBlank
+  @Size(min = 5, max = 50)
+  private String firstName;
 
-    @NotBlank
-    @Size(min = 5, max = 50)
-    private String lastName;
+  @NotBlank
+  @Size(min = 5, max = 50)
+  private String lastName;
 
-    @NotBlank
-    @Email
-    private String email;
+  @NotBlank
+  @Email
+  private String email;
 
-    @NotBlank
-    @Pattern(
-            regexp = "^\\+994[1-9][0-9]\\d{7}$",
-            message = "Phone number must be a valid Azerbaijani number (e.g., +994501234567)"
-    )
-    private String phoneNumber;
+  @NotBlank
+  @Pattern(
+      regexp = "^\\+994[1-9][0-9]\\d{7}$",
+      message = "Phone number must be a valid Azerbaijani number (e.g., +994501234567)"
+  )
+  private String phoneNumber;
 
-    @NotBlank
-    private String countryCode;
+  @NotBlank
+  private String countryCode;
 }

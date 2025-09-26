@@ -11,11 +11,12 @@ import java.util.UUID;
 @Data
 @Builder
 public class UserDto {
-    private UUID id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
-    private UserRole userRole;
-    private UserStatus userStatus;
+
+  private UUID id;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String phoneNumber;
+  private UserRole userRole;
+  private UserStatus userStatus;
 }

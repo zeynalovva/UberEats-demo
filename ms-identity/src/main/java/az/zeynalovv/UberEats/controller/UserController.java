@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> createUser(@RequestBody UserRegisterRequest userRegisterRequest) {
-        userService.requestUserCreation(userRegisterRequest);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("User creation requested successfully");
-    }
+  @PostMapping("/register")
+  public ResponseEntity<String> createUser(@RequestBody UserRegisterRequest userRegisterRequest) {
+    userService.requestUserCreation(userRegisterRequest);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body("User creation requested successfully");
+  }
 
 }

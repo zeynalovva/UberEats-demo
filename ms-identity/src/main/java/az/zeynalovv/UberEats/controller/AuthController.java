@@ -15,12 +15,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    @GetMapping("/verify")
-    public ResponseEntity<Map<String, Object>> verifyAccount(@RequestParam("token") String token) {;
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.verifyAccount(token));
-    }
+  @GetMapping("/verify")
+  public ResponseEntity<Map<String, Object>> verifyAccount(@RequestParam("token") String token) {
+    ;
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.verifyAccount(token));
+  }
 
 
 }

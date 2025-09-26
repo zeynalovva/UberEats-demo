@@ -14,27 +14,27 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, UserRegisterRequest> redisTemplate;
-    private static final long VERIFICATION_TOKEN_TTL_MIN = 30;
+  private final RedisTemplate<String, UserRegisterRequest> redisTemplate;
+  private static final long VERIFICATION_TOKEN_TTL_MIN = 30;
 
 
-    public void savePendingUser(UserRegisterRequest user){
-        String key = "user::" + user.getEmail();
-        redisTemplate.opsForValue().set(key, user, VERIFICATION_TOKEN_TTL_MIN, TimeUnit.MINUTES);
+  public void savePendingUser(UserRegisterRequest user) {
+    String key = "user::" + user.getEmail();
+    redisTemplate.opsForValue().set(key, user, VERIFICATION_TOKEN_TTL_MIN, TimeUnit.MINUTES);
+  }
+
+  public UserRegisterRequest getPendingUser(String email) {
+    String key = "user::" + email;
+    UserRegisterRequest user = redisTemplate.opsForValue().get(key);
+
+    if (user == null) {
+      throw new RedisException(ErrorMessage.NO_PENDING_USER_FOUND + email);
     }
 
-    public UserRegisterRequest getPendingUser(String email){
-        String key = "user::" + email;
-        UserRegisterRequest user = redisTemplate.opsForValue().get(key);
+    redisTemplate.delete(key);
 
-        if(user == null){
-            throw new RedisException(ErrorMessage.NO_PENDING_USER_FOUND + email);
-        }
-
-        redisTemplate.delete(key);
-
-        return user;
-    }
+    return user;
+  }
 
 
 }

@@ -24,45 +24,45 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User {
 
-    @Id
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @UuidGenerator
+  private UUID id;
 
-    @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
+  @Column(name = "first_name", nullable = false, length = 50)
+  private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
+  @Column(name = "last_name", nullable = false, length = 50)
+  private String lastName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
-    private String email;
+  @Column(name = "email", nullable = false, unique = true, length = 100)
+  private String email;
 
-    @Column(name = "phone_number", nullable = false, unique = true, length = 30)
-    private String phoneNumber;
+  @Column(name = "phone_number", nullable = false, unique = true, length = 30)
+  private String phoneNumber;
 
-    @Column(name = "country_code", nullable = false, length = 10)
-    private String countryCode;
+  @Column(name = "country_code", nullable = false, length = 10)
+  private String countryCode;
 
-    @Column(name = "status", nullable = false)
-    private UserStatus userStatus;
+  @Column(name = "status", nullable = false)
+  private UserStatus userStatus;
 
-    private UserRole userRole;
+  private UserRole userRole;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 
-    @LastModifiedDate
-    private LocalDateTime lastLoginAt;
+  @LastModifiedDate
+  private LocalDateTime lastLoginAt;
 
-    //private String profileImageUrl;
+  //private String profileImageUrl;
 
-    @PrePersist
-    public void prePersist() {
-        this.userStatus = UserStatus.ACTIVE;
-        this.userRole = UserRole.USER;
-    }
+  @PrePersist
+  public void prePersist() {
+    this.userStatus = UserStatus.ACTIVE;
+    this.userRole = UserRole.USER;
+  }
 
 }

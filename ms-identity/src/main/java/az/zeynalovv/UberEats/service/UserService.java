@@ -27,56 +27,56 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final ApplicationProperties applicationProperties;
-    private final EmailService emailService;
-    private final JwtService jwtService;
-    private final RedisService redisService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final RedisTemplate<String, UserRegisterRequest> redisTemplate;
+  private final ApplicationProperties applicationProperties;
+  private final EmailService emailService;
+  private final JwtService jwtService;
+  private final RedisService redisService;
+  private final UserRepository userRepository;
+  private final UserMapper userMapper;
+  private final RedisTemplate<String, UserRegisterRequest> redisTemplate;
 
-    public void requestUserCreation(UserRegisterRequest user){
-        if(userRepository.existsUserByEmailOrPhoneNumber(user.getEmail(), user.getPhoneNumber())){
-            throw new UserException(String.format(ErrorMessage.USER_ALREADY_EXISTS, user.getEmail()));
-        }
-
-        redisService.savePendingUser(user);
-        emailService.sendVerificationEmail(user.getEmail(), generateVerificationLink(user.getEmail()));
+  public void requestUserCreation(UserRegisterRequest user) {
+    if (userRepository.existsUserByEmailOrPhoneNumber(user.getEmail(), user.getPhoneNumber())) {
+      throw new UserException(String.format(ErrorMessage.USER_ALREADY_EXISTS, user.getEmail()));
     }
 
-    public Map<String, Object> createUser(String email) {
-        User user = userMapper.toEntity(redisService.getPendingUser(email));
-        userRepository.save(user);
+    redisService.savePendingUser(user);
+    emailService.sendVerificationEmail(user.getEmail(), generateVerificationLink(user.getEmail()));
+  }
 
-        UserDto userDto = userMapper.toDto(user);
-        String jwtToken = jwtService.generateToken(userDto, TokenType.ACCESS);
+  public Map<String, Object> createUser(String email) {
+    User user = userMapper.toEntity(redisService.getPendingUser(email));
+    userRepository.save(user);
 
-        return generateSuccessfulResponse(jwtToken, userDto);
-    }
+    UserDto userDto = userMapper.toDto(user);
+    String jwtToken = jwtService.generateToken(userDto, TokenType.ACCESS);
 
-    private Map<String, Object> generateSuccessfulResponse(String token, UserDto user){
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("user", user);
-        return response;
-    }
+    return generateSuccessfulResponse(jwtToken, userDto);
+  }
 
-    private String generateVerificationLink(String email) {
-        LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(30);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  private Map<String, Object> generateSuccessfulResponse(String token, UserDto user) {
+    Map<String, Object> response = new HashMap<>();
+    response.put("token", token);
+    response.put("user", user);
+    return response;
+  }
 
-        String expiryDateString = expiryDate.format(formatter);
-        String subject = email + "/" + expiryDateString;
+  private String generateVerificationLink(String email) {
+    LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(30);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        return encryptMessage(subject);
-    }
+    String expiryDateString = expiryDate.format(formatter);
+    String subject = email + "/" + expiryDateString;
 
-    @SneakyThrows
-    private String encryptMessage(String plainText){
-        PrivateKey privateKey = CryptoUtil.loadPrivateKey(applicationProperties.getSecurity()
-                .getAuthentication().getPrivateKey());
+    return encryptMessage(subject);
+  }
 
-        byte[] encryptedText = CryptoUtil.encryptText(privateKey, plainText.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedText);
-    }
+  @SneakyThrows
+  private String encryptMessage(String plainText) {
+    PrivateKey privateKey = CryptoUtil.loadPrivateKey(applicationProperties.getSecurity()
+        .getAuthentication().getPrivateKey());
+
+    byte[] encryptedText = CryptoUtil.encryptText(privateKey, plainText.getBytes());
+    return Base64.getEncoder().encodeToString(encryptedText);
+  }
 }

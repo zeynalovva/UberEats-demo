@@ -15,28 +15,28 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    @Bean
-    public RedisTemplate<String, UserRegisterRequest> redisTemplateForPendingUsers(
-            RedisConnectionFactory factory) {
+  @Bean
+  public RedisTemplate<String, UserRegisterRequest> redisTemplateForPendingUsers(
+      RedisConnectionFactory factory) {
 
-        RedisTemplate<String, UserRegisterRequest> template = new RedisTemplate<>();
-        template.setConnectionFactory(factory);
+    RedisTemplate<String, UserRegisterRequest> template = new RedisTemplate<>();
+    template.setConnectionFactory(factory);
 
-        StringRedisSerializer keySerializer = new StringRedisSerializer();
-        template.setKeySerializer(keySerializer);
-        template.setHashKeySerializer(keySerializer);
+    StringRedisSerializer keySerializer = new StringRedisSerializer();
+    template.setKeySerializer(keySerializer);
+    template.setHashKeySerializer(keySerializer);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Jackson2JsonRedisSerializer<UserRegisterRequest> valueSerializer =
-                new Jackson2JsonRedisSerializer<>(mapper, UserRegisterRequest.class);
+    Jackson2JsonRedisSerializer<UserRegisterRequest> valueSerializer =
+        new Jackson2JsonRedisSerializer<>(mapper, UserRegisterRequest.class);
 
-        template.setValueSerializer(valueSerializer);
-        template.setHashValueSerializer(valueSerializer);
+    template.setValueSerializer(valueSerializer);
+    template.setHashValueSerializer(valueSerializer);
 
-        template.afterPropertiesSet();
-        return template;
-    }
+    template.afterPropertiesSet();
+    return template;
+  }
 }

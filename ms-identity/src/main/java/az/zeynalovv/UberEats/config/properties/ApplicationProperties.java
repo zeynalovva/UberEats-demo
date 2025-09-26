@@ -6,9 +6,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
-
 
 @Getter
 @Setter
@@ -16,18 +13,20 @@ import java.security.PublicKey;
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
 
-    private final Security security = new Security();
+  private final Security security = new Security();
+
+  @Getter
+  @Setter
+  public static class Security {
+
+    private final Authentication authentication = new Authentication();
 
     @Getter
     @Setter
-    public static class Security{
-        private final Authentication authentication = new Authentication();
+    public static class Authentication {
 
-        @Getter
-        @Setter
-        public static class Authentication{
-            private String publicKey;
-            private String privateKey;
-        }
+      private String publicKey;
+      private String privateKey;
     }
+  }
 }
