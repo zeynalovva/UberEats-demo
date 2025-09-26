@@ -27,6 +27,8 @@ public class ApplicationProperties {
 
       private String publicKey;
       private String privateKey;
+      private Long accessTokenValiditySeconds;
+      private Long refreshTokenValiditySeconds;
     }
   }
 }

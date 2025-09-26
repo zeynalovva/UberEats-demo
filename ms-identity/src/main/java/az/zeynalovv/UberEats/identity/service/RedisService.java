@@ -32,7 +32,6 @@ public class RedisService {
     }
 
     redisTemplate.delete(key);
-
     return user;
   }
 

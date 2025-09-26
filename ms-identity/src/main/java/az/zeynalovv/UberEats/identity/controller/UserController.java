@@ -24,4 +24,6 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.ACCEPTED).body("User creation requested successfully");
   }
 
+
+
 }

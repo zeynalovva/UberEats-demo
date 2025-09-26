@@ -19,18 +19,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 public class EmailService {
 
   private final JavaMailSender mailSender;
-  private final SpringTemplateEngine templateEngine;
-
-  @Value("${application.base-url}")
-  private String baseUrl;
-
-  public void sendSimpleEmail(String to, String subject, String body) {
-    SimpleMailMessage mailMessage = new SimpleMailMessage();
-    mailMessage.setTo(to);
-    mailMessage.setSubject(subject);
-    mailMessage.setText(body);
-    mailSender.send(mailMessage);
-  }
 
   @SneakyThrows
   public void sendHtmlEmail(String to, String subject, String body) {
@@ -40,16 +28,6 @@ public class EmailService {
     helper.setSubject(subject);
     helper.setText(body, true);
     mailSender.send(mimeMessage);
-  }
-
-  public void sendVerificationEmail(String email, String verificationLink) {
-    Context context = new Context();
-    context.setVariable("verificationBaseUrl", baseUrl);
-    context.setVariable("verificationLink",
-        URLEncoder.encode(verificationLink));
-
-    String body = templateEngine.process("verification-email", context);
-    sendHtmlEmail(email, "Email Verification", body);
   }
 
 }

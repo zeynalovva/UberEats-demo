@@ -1,6 +1,7 @@
 package az.zeynalovv.UberEats.identity.security;
 
 import az.zeynalovv.UberEats.identity.config.properties.ApplicationProperties;
+import az.zeynalovv.UberEats.identity.dto.JwtTokenDto;
 import az.zeynalovv.UberEats.identity.dto.UserDto;
 import az.zeynalovv.UberEats.identity.entity.constant.TokenKey;
 import az.zeynalovv.UberEats.identity.entity.enums.TokenType;
@@ -9,6 +10,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +24,16 @@ import java.util.Map;
 @Service
 public class JwtService {
 
+  private final ApplicationProperties.Security.Authentication authentication;
+
   private final PrivateKey privateKey;
   private final PublicKey publicKey;
 
+
   @SneakyThrows
   public JwtService(ApplicationProperties applicationProperties) {
+    authentication = applicationProperties.getSecurity().getAuthentication();
+
     privateKey = CryptoUtil.loadPrivateKey(applicationProperties.getSecurity()
         .getAuthentication().getPrivateKey());
 
@@ -33,7 +41,25 @@ public class JwtService {
         .getAuthentication().getPublicKey());
   }
 
-  public String generateToken(UserDto user, TokenType tokenType) {
+  public JwtTokenDto generateToken(UserDto user) {
+    String accessToken = generateToken(user, TokenType.ACCESS);
+    String refreshToken = generateToken(user, TokenType.REFRESH);
+
+    return JwtTokenDto.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
+  }
+
+
+  private String generateToken(UserDto user, TokenType tokenType) {
+
+    final Long validity = tokenType == TokenType.ACCESS
+        ? authentication.getAccessTokenValiditySeconds()
+        : authentication.getRefreshTokenValiditySeconds();
+
+    final LocalDateTime expirationTime = LocalDateTime.now().plusSeconds(validity);
+
     return Jwts.builder()
         .setSubject(user.getEmail())
         .claim(TokenKey.ID, user.getId())
@@ -41,9 +67,13 @@ public class JwtService {
         .claim(TokenKey.USER_STATUS, user.getUserStatus())
         .claim(TokenKey.TOKEN_TYPE, tokenType.name())
         .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+        .setExpiration(convertToDate(expirationTime))
         .signWith(privateKey, SignatureAlgorithm.RS256)
         .compact();
+  }
+
+  private Date convertToDate(LocalDateTime localDateTime) {
+    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
   }
 
 

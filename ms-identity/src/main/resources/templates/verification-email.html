@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
 <p>Hello,</p>
-<p>Click <a th:href="${verificationBaseUrl + '?token=' + verificationLink}">Verify</a>to verify your account.</p>
+
+<form action="" th:action="${verificationBaseUrl + '?token=' + verificationLink}" method="post">
+    <button type="submit">Verify</button>
+</form>
 </body>
 </html>
